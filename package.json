@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/jasonlimas/jasonlimas-web#readme",
   "dependencies": {
+    "dotenv": "^16.0.0",
     "express": "^4.17.3",
     "nodemailer": "^6.7.3",
     "nodemon": "^2.0.15"
