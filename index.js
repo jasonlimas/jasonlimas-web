@@ -50,9 +50,6 @@ app.post('/contact-me/send', (req, res) => {
         auth: {
             user: process.env.EMAIL_USERNAME,
             pass: process.env.EMAIL_PASSWORD
-        },
-        tls: {
-            rejectUnauthorized: false
         }
     })
     
@@ -78,7 +75,7 @@ app.post('/contact-me/send', (req, res) => {
 // If no event handler handled the request, use this one
 app.use(unknownEndpoint)
 
-const PORT = 3001
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
