@@ -3,6 +3,14 @@ const express = require('express')
 const nodemailer = require('nodemailer')
 const app = express()
 
+const requestLogger = (req, res, next) => {
+    console.log('Method:', req.method)
+    console.log('Path:  ', req.path)
+    console.log('Body:  ', req.body)
+    console.log('---')
+    next()
+}
+
 const unknownEndpoint = (req, res) => {
     res.status(404).send({ error: 'unknown endpoint' })
 }
@@ -10,14 +18,14 @@ const unknownEndpoint = (req, res) => {
 // Middleware
 app.use(express.json())
 app.use(express.static('build'))
-
+app.use(requestLogger)
 
 // POST route for sending message
 app.post('/contact-me/send', (req, res) => {
     const body = req.body
 
     if (body.email === undefined || body.message === undefined) {
-        res.status(400).send({ error: 'missing email or message' })
+        return res.status(400).send({ error: 'missing email or message' })
     }
     else res.json(body)
 
@@ -28,7 +36,7 @@ app.post('/contact-me/send', (req, res) => {
         <ul>
             <li>Email: ${body.email}</li>
         </ul>
-        <h3>Date: ${new Date().toISOString()}</h3>
+        <h3>Date: ${new Date()}</h3>
         <h3>Message:</h3>
         <p>${body.message}</p>
     `
