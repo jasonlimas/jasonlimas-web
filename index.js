@@ -7,28 +7,32 @@ const unknownEndpoint = (req, res) => {
     res.status(404).send({ error: 'unknown endpoint' })
 }
 
-    // Middleware
+// Middleware
 app.use(express.json())
 app.use(express.static('build'))
 
 
 // POST route for sending message
 app.post('/contact-me/send', (req, res) => {
-    const message = req.body
-    console.log(message)
-    res.json(message)
+    const body = req.body
+
+    if (body.email === undefined || body.message === undefined) {
+        res.status(400).send({ error: 'missing email or message' })
+    }
+    else res.json(body)
 
     // Build message
     const output = `
         <h2>Hello! You have a new contact request!</h2>
         <h3>Sender details:</h3>
         <ul>
-            <li>Email: ${message.email}</li>
+            <li>Email: ${body.email}</li>
         </ul>
-        <h3>Date: ${message.date}</h3>
+        <h3>Date: ${new Date().toISOString()}</h3>
         <h3>Message:</h3>
-        <p>${message.message}</p>
+        <p>${body.message}</p>
     `
+
 
     // Create a transporter
     const transporter = nodemailer.createTransport({
@@ -48,7 +52,7 @@ app.post('/contact-me/send', (req, res) => {
     const mailDetails = {
         from: '"jasonlimas.com Mailer" <mailer@jasonlimas.com>',
         to: process.env.EMAIL_RECEIVER,
-        subject: `New message from ${message.email}!`,
+        subject: `New message from ${body.email}!`,
         html: output
     }
 
