@@ -7,22 +7,20 @@ app.use(express.json())
 app.use(express.static('build'))
 
 // POST route for sending message
-app.post('/api/contact', (req, res) => {
+app.post('/contact-me/send', (req, res) => {
     const message = req.body
     console.log(message)
     res.json(message)
 
     // Build message
     const output = `
-        <html>
-        <p>Hello! You have a new contact request!</p>
+        <h2>Hello! You have a new contact request!</h2>
         <h3>Sender details:</h3>
         <ul>
             <li>Email: ${message.email}</li>
         </ul>
         <h3>Message:</h3>
         <p>${message.message}</p>
-        </html>
     `
 
     // Create a transporter
@@ -42,7 +40,7 @@ app.post('/api/contact', (req, res) => {
     // Setup email details
     const mailDetails = {
         from: '"jasonlimas.com Mailer" <mailer@jasonlimas.com>',
-        to: 'me@jasonlimas.com',
+        to: process.env.EMAIL_RECEIVER,
         subject: `New message from ${message.email}!`,
         html: output
     }
