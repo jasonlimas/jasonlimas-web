@@ -3,8 +3,14 @@ const express = require('express')
 const nodemailer = require('nodemailer')
 const app = express()
 
+const unknownEndpoint = (req, res) => {
+    res.status(404).send({ error: 'unknown endpoint' })
+}
+
+    // Middleware
 app.use(express.json())
 app.use(express.static('build'))
+
 
 // POST route for sending message
 app.post('/contact-me/send', (req, res) => {
@@ -19,6 +25,7 @@ app.post('/contact-me/send', (req, res) => {
         <ul>
             <li>Email: ${message.email}</li>
         </ul>
+        <h3>Date: ${message.date}</h3>
         <h3>Message:</h3>
         <p>${message.message}</p>
     `
@@ -55,6 +62,9 @@ app.post('/contact-me/send', (req, res) => {
         console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info))
     })
 })
+
+// If no event handler handled the request, use this one
+app.use(unknownEndpoint)
 
 const PORT = 3001
 app.listen(PORT, () => {
